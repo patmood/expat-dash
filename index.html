@@ -8,25 +8,69 @@
         font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
         font-weight: 200;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
       }
 
       #rate {
         font-size: 20vw;
         font-weight: 200;
+        margin: 0;
+      }
+
+      .red {
+        color: red;
+      }
+
+      .green {
+        color: green;
       }
     </style>
   </head>
   <body>
     <h1 id="rate">Loading...</h1>
+    <h2>AUD/USD</h2>
+    <div id="diff"></div>
     <script>
-      var init = function() {
-        fetch('http://api.fixer.io/latest?symbols=USD&base=AUD')
+      function prevDayPrice (currentDate) {
+        var d = new Date(currentDate)
+        d.setDate(d.getDate() - 1)
+        dateString = d.toISOString().slice(0, 10)
+        return getRate(dateString)
+      }
+
+      function getRate (date) {
+        date = date || 'latest'
+        return fetch('http://api.fixer.io/' + date + '?symbols=USD&base=AUD')
           .then(function(response) {
             return response.json()
           })
+      }
+
+      function init () {
+        var rateToday
+        var rateYesterday
+        getRate()
           .then(function(data) {
-            var rate = Math.round(data.rates.USD * 1000) / 1000
+            var date = data.date
+            rateToday = data.rates.USD
+            var rate = Math.round(rateToday * 1000) / 1000
             document.getElementById('rate').innerHTML = rate
+            return prevDayPrice(date)
+          })
+          .then(function(data) {
+            rateYesterday = data.rates.USD
+            var diff = Math.round((rateToday - rateYesterday) * 1000) / 1000
+            var diffEl = document.getElementById('diff')
+            diffEl.innerHTML = diff
+            if (diff > 0) {
+              diffEl.classList.add('green')
+            } else if (diff < 0) {
+              diffEl.classList.add('red')
+            }
           })
       }
 
