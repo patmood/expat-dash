@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Expat Dash</title>
+    <style>
+      body {
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        font-weight: 200;
+        text-align: center;
+      }
+
+      #rate {
+        font-size: 20vw;
+        font-weight: 200;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="rate">Loading...</h1>
+    <script>
+      var init = function() {
+        fetch('http://api.fixer.io/latest?symbols=USD&base=AUD')
+          .then(function(response) {
+            return response.json()
+          })
+          .then(function(data) {
+            var rate = Math.round(data.rates.USD * 1000) / 1000
+            document.getElementById('rate').innerHTML = rate
+          })
+      }
+
+      window.onload = init
+    </script>
+  </body>
+</html>
