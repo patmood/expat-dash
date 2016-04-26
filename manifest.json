@@ -1,0 +1,13 @@
+{
+  "name": "Expat Dash",
+  "description": "Change rate in every new tab",
+  "version": "0.1",
+  "incognito": "split",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "manifest_version": 2
+}
