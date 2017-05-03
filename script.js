@@ -1,40 +1,39 @@
-function prevDayPrice (currentDate) {
-  var d = new Date(currentDate)
-  d.setDate(d.getDate() - 1)
-  var dateString = d.toISOString().slice(0, 10)
-  return getRate(dateString)
+function renderCard (price, label) {
+  return `
+    <div class='card'>
+      <div class='card__price'>$${price}</div>
+      <div>${label}</div>
+    </div>
+  `
 }
 
-function getRate (date) {
-  date = date || 'latest'
-  return window.fetch('http://api.fixer.io/' + date + '?symbols=USD&base=AUD')
-    .then(function (response) {
-      return response.json()
-    })
+function getAUDRate (date) {
+  date = 'latest'
+  return window.fetch(`http://api.fixer.io/${date}?symbols=USD&base=AUD`)
+    .then(res => res.json())
 }
 
-function init () {
-  var rateToday
-  var rateYesterday
-  getRate()
-    .then(function (data) {
-      var date = data.date
-      rateToday = data.rates.USD
-      var rate = Math.round(rateToday * 1000) / 1000
-      document.getElementById('rate').innerHTML = rate
-      return prevDayPrice(date)
-    })
-    .then(function (data) {
-      rateYesterday = data.rates.USD
-      var diff = Math.round((rateToday - rateYesterday) * 1000) / 1000
-      var diffEl = document.getElementById('diff')
-      diffEl.innerHTML = diff
-      if (diff > 0) {
-        diffEl.classList.add('green')
-      } else if (diff < 0) {
-        diffEl.classList.add('red')
-      }
-    })
+function getCoinbaseRate (code) {
+  return window.fetch(`https://api.coinbase.com/v2/prices/${code}-USD/spot`)
+    .then(res => res.json())
+}
+
+function renderData (data) {
+  const rates = document.getElementById('rates')
+  const priceAUD = Math.round(data[0].rates.USD * 1000) / 1000
+  const priceBTC = Math.round(data[1].data.amount)
+  const priceETH = Math.round(data[2].data.amount)
+  console.log(data)
+  rates.innerHTML = `
+    ${renderCard(priceAUD, 'AUD')}
+    ${renderCard(priceBTC, 'BTC')}
+    ${renderCard(priceETH, 'ETH')}
+  `
+}
+
+const init = () => {
+  Promise.all([ getAUDRate(), getCoinbaseRate('BTC'), getCoinbaseRate('ETH') ])
+  .then(renderData)
 }
 
 window.onload = init
