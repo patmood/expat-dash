@@ -23,16 +23,18 @@ function renderData (data) {
   const priceAUD = Math.round(data[0].rates.USD * 1000) / 1000
   const priceBTC = Math.round(data[1].data.amount)
   const priceETH = Math.round(data[2].data.amount)
+  const priceLTC = Math.round(data[3].data.amount)
   console.log(data)
   rates.innerHTML = `
     ${renderCard(priceAUD, 'AUD')}
     ${renderCard(priceBTC, 'BTC')}
     ${renderCard(priceETH, 'ETH')}
+    ${renderCard(priceLTC, 'LTC')}
   `
 }
 
 const init = () => {
-  Promise.all([ getAUDRate(), getCoinbaseRate('BTC'), getCoinbaseRate('ETH') ])
+  Promise.all([ getAUDRate(), getCoinbaseRate('BTC'), getCoinbaseRate('ETH'), getCoinbaseRate('LTC') ])
   .then(renderData)
 }
 
