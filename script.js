@@ -10,11 +10,7 @@ function renderCard (price, label) {
 let ACCESS_KEY = '133d1b43e7de44febb8a15b6018e30d7'
 
 function getAUDRate () { 
-  const url = `http://data.fixer.io/api/convert
-    ?access_key=${ACCESS_KEY}
-    &from=AUD
-    &to=USD
-    &amount=1`
+  const url = `http://data.fixer.io/api/convert?access_key=${ACCESS_KEY}&from=AUD&to=USD&amount=1`
   
   return window.fetch(url)
     .then(res => res.json())
