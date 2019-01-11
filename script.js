@@ -9,7 +9,7 @@ function renderCard (price, label) {
 
 function getAUDRate (date) {
   date = 'latest'
-  return window.fetch(`http://api.fixer.io/${date}?symbols=USD&base=AUD`)
+  return window.fetch(`http://api.fixer.io/${date}?access_key=133d1b43e7de44febb8a15b6018e30d7&symbols=USD&base=AUD`)
     .then(res => res.json())
 }
 
